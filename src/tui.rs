@@ -1,4 +1,4 @@
-use crate::sacct::SubmitRecord;
+use crate::{cli::ColorScheme, sacct::SubmitRecord};
 use chrono::{Datelike, Duration, NaiveDate, Utc, Weekday};
 use ratatui::{
     crossterm::event::{self, KeyCode, KeyEventKind},
@@ -11,24 +11,24 @@ use std::io;
 
 const WEEK_DAYS: [&str; 7] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// 生成过去 6 个月的日期和随机提交数据
-fn generate_sumbit_data() -> Vec<SubmitRecord> {
-    let end_date = Utc::now().date_naive();
-    let start_date = end_date - Duration::days(180);
+// // 生成过去 6 个月的日期和随机提交数据
+// fn generate_sumbit_data() -> Vec<SubmitRecord> {
+//     let end_date = Utc::now().date_naive();
+//     let start_date = end_date - Duration::days(180);
 
-    let mut sumbit_data = Vec::new();
-    let mut date = start_date;
-    while date <= end_date {
-        let sumbit_count = date.day() % 10;
-        sumbit_data.push(SubmitRecord {
-            date,
-            count: sumbit_count,
-        });
-        date = date.succ_opt().unwrap();
-    }
+//     let mut sumbit_data = Vec::new();
+//     let mut date = start_date;
+//     while date <= end_date {
+//         let sumbit_count = date.day() % 10;
+//         sumbit_data.push(SubmitRecord {
+//             date,
+//             count: sumbit_count,
+//         });
+//         date = date.succ_opt().unwrap();
+//     }
 
-    sumbit_data
-}
+//     sumbit_data
+// }
 
 // determine color by q1-q5
 fn determine_color_thresholds(data: &[u32]) -> Vec<u32> {
@@ -56,16 +56,24 @@ fn get_color_for_count(count: u32, thresholds: &[u32]) -> Color {
     }
 }
 
-pub fn lunch() -> io::Result<()> {
+pub fn tui_lunch(
+    data: Vec<SubmitRecord>,
+    full: bool,
+    _color_scheme: ColorScheme,
+) -> io::Result<()> {
     let mut terminal = ratatui::init();
     terminal.clear()?;
-    let app_result = run(terminal);
+    let app_result = run(terminal, data, full, _color_scheme);
     ratatui::restore();
     app_result
 }
 
-fn run(mut terminal: DefaultTerminal) -> io::Result<()> {
-    let submits = generate_sumbit_data();
+fn run(
+    mut terminal: DefaultTerminal,
+    submits: Vec<SubmitRecord>,
+    full: bool,
+    _color_scheme: ColorScheme,
+) -> io::Result<()> {
     let submit_counts: Vec<u32> = submits.iter().map(|c| c.count).collect();
 
     // calculate color thresholds
@@ -140,7 +148,7 @@ fn run(mut terminal: DefaultTerminal) -> io::Result<()> {
                 })
                 .collect();
 
-            let headers = get_header(&mondays, true);
+            let headers = get_header(&mondays, full);
 
             // set width for each column
             // 5 for weekday text , 10 for each week

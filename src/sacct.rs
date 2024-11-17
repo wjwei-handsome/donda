@@ -11,10 +11,24 @@ pub struct SubmitRecord {
     pub count: u32,
 }
 
+fn check_sacct_exists() -> Result<()> {
+    let output = Command::new("sacct").arg("-V").output()?;
+    if !output.status.success() {
+        return Err(anyhow::anyhow!("R U kidding me? sacct command not found"));
+    }
+    Ok(())
+}
+
 pub fn fetch_submit_records(start: NaiveDate, end: NaiveDate) -> Result<Vec<SubmitRecord>> {
+    // check if sacct command exists
+    check_sacct_exists()?;
+    // get username
+    let username = whoami::username();
     // execute sacct command and get output
     let output = Command::new("sacct")
         .args([
+            "--user",
+            &username,
             "--starttime",
             &start.format("%Y-%m-%d").to_string(),
             "--endtime",

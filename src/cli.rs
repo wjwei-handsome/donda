@@ -1,7 +1,7 @@
 use chrono::NaiveDate;
 use clap::{Parser, ValueEnum};
 
-const MAX_DAYS: i64 = 180;
+pub const MAX_DAYS: i64 = 180;
 
 /// Command-line interface for configuring Slurm submit record analysis and display
 #[derive(Parser, Debug)]
@@ -11,20 +11,20 @@ const MAX_DAYS: i64 = 180;
 #[command(about = "Show Slurm submit heatmap in a TUI", long_about = None)]
 pub struct Cli {
     /// Start date in the format YYYY-MM-DD (optional, defaults to 180 days ago from today)
-    #[arg(long, short, value_parser = parse_date)]
+    #[arg(long, short, value_parser = parse_date, requires = "end")]
     pub start: Option<NaiveDate>,
 
     /// End date in the format YYYY-MM-DD (optional, defaults to today)
-    #[arg(long, short, value_parser = parse_date)]
+    #[arg(long, short, value_parser = parse_date, requires = "start")]
     pub end: Option<NaiveDate>,
 
     /// Display full header in TUI (default: false)
-    #[arg(long, short, action = clap::ArgAction::SetTrue)]
+    #[arg(long, short, default_value = "false")]
     pub full_header: bool,
 
     /// Color scheme to use for TUI (not yet implemented)
-    #[arg(long, short, value_enum)]
-    pub color_scheme: Option<ColorScheme>,
+    #[arg(long, short, value_enum, default_value = "default")]
+    pub color_scheme: ColorScheme,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, ValueEnum)]
