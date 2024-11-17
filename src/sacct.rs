@@ -1,6 +1,5 @@
 use anyhow::Result;
 use chrono::NaiveDate;
-use std::error::Error;
 use std::process::{Command, Output};
 use std::str;
 
@@ -12,18 +11,29 @@ pub struct SubmitRecord {
 }
 
 fn check_sacct_exists() -> Result<()> {
-    let output = Command::new("sacct").arg("-V").output()?;
-    if !output.status.success() {
-        return Err(anyhow::anyhow!("R U kidding me? sacct command not found"));
+    match Command::new("sacct").arg("-V").output() {
+        Ok(_) => Ok(()),
+        Err(_) => Err(anyhow::anyhow!("R U kidding me? sacct command not found")),
     }
-    Ok(())
 }
 
-pub fn fetch_submit_records(start: NaiveDate, end: NaiveDate) -> Result<Vec<SubmitRecord>> {
+pub fn fetch_submit_records(
+    start: NaiveDate,
+    end: NaiveDate,
+    username: Option<String>,
+) -> Result<Vec<SubmitRecord>> {
     // check if sacct command exists
     check_sacct_exists()?;
     // get username
-    let username = whoami::username();
+    let username = if let Some(username) = username {
+        username
+    } else {
+        whoami::username()
+    };
+    println!(
+        "Fetching submit records for {} from {} to {}",
+        username, start, end
+    );
     // execute sacct command and get output
     let output = Command::new("sacct")
         .args([

@@ -25,6 +25,10 @@ pub struct Cli {
     /// Color scheme to use for TUI (not yet implemented)
     #[arg(long, short, value_enum, default_value = "default")]
     pub color_scheme: ColorScheme,
+
+    /// Hiden option for determining the user name
+    #[arg(long, short, hide = true)]
+    pub username: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, ValueEnum)]

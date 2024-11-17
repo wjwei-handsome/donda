@@ -15,9 +15,8 @@ fn main() -> Result<()> {
         today - chrono::Duration::days(MAX_DAYS)
     });
     let end = args.end.unwrap_or_else(|| chrono::Utc::now().date_naive());
-    println!("Start: {}, End: {}", start, end);
 
-    let submit_data = fetch_submit_records(start, end)?;
+    let submit_data = fetch_submit_records(start, end, args.username)?;
     tui_lunch(submit_data, args.full_header, args.color_scheme)?;
     Ok(())
 }
