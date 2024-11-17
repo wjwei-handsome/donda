@@ -1,5 +1,5 @@
 use crate::{cli::ColorScheme, sacct::SubmitRecord};
-use chrono::{Datelike, Duration, NaiveDate, Utc, Weekday};
+use chrono::{Datelike, Duration, NaiveDate, Weekday};
 use ratatui::{
     crossterm::event::{self, KeyCode, KeyEventKind},
     layout::{Alignment, Constraint, Direction, Layout},
@@ -33,6 +33,9 @@ const WEEK_DAYS: [&str; 7] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 // determine color by q1-q5
 fn determine_color_thresholds(data: &[u32]) -> Vec<u32> {
     let mut sorted_data = data.to_vec();
+    if sorted_data.is_empty() {
+        return vec![0, 0, 0, 0];
+    }
     sorted_data.sort_unstable();
 
     // quintiles
