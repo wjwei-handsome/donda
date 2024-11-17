@@ -30,10 +30,6 @@ pub fn fetch_submit_records(
     } else {
         whoami::username()
     };
-    println!(
-        "Fetching submit records for {} from {} to {}",
-        username, start, end
-    );
     // execute sacct command and get output
     let output = Command::new("sacct")
         .args([

@@ -58,18 +58,22 @@ fn get_color_for_count(count: u32, thresholds: &[u32]) -> Color {
 
 pub fn tui_lunch(
     data: Vec<SubmitRecord>,
+    start: NaiveDate,
+    end: NaiveDate,
     full: bool,
     _color_scheme: ColorScheme,
 ) -> io::Result<()> {
     let mut terminal = ratatui::init();
     terminal.clear()?;
-    let app_result = run(terminal, data, full, _color_scheme);
+    let app_result = run(terminal, start, end, data, full, _color_scheme);
     ratatui::restore();
     app_result
 }
 
 fn run(
     mut terminal: DefaultTerminal,
+    start: NaiveDate,
+    end: NaiveDate,
     submits: Vec<SubmitRecord>,
     full: bool,
     _color_scheme: ColorScheme,
@@ -81,10 +85,11 @@ fn run(
 
     // find all mondays in the date range
     let mut mondays = vec![];
-    let today = Utc::now().date_naive();
+    // let today = Utc::now().date_naive();
     // from 6 months ago to today
-    let mut date = today - Duration::days(180);
-    while date <= today {
+    // let mut date = today - Duration::days(180);
+    let mut date = start;
+    while date <= end {
         if date.weekday() == Weekday::Mon {
             mondays.push(date);
         }

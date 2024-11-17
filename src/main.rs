@@ -17,6 +17,6 @@ fn main() -> Result<()> {
     let end = args.end.unwrap_or_else(|| chrono::Utc::now().date_naive());
 
     let submit_data = fetch_submit_records(start, end, args.username)?;
-    tui_lunch(submit_data, args.full_header, args.color_scheme)?;
+    tui_lunch(submit_data, start, end, args.full_header, args.color_scheme)?;
     Ok(())
 }
