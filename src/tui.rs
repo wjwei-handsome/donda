@@ -1,3 +1,4 @@
+use crate::sacct::SubmitRecord;
 use chrono::{Datelike, Duration, NaiveDate, Utc, Weekday};
 use ratatui::{
     crossterm::event::{self, KeyCode, KeyEventKind},
@@ -9,13 +10,6 @@ use ratatui::{
 use std::io;
 
 const WEEK_DAYS: [&str; 7] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-// Submit information for each day
-#[derive(Debug)]
-struct SubmitRecord {
-    date: NaiveDate,
-    count: u32,
-}
 
 // 生成过去 6 个月的日期和随机提交数据
 fn generate_sumbit_data() -> Vec<SubmitRecord> {
