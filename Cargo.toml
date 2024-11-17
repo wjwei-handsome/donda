@@ -1,0 +1,14 @@
+[package]
+name = "donda"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.93"
+chrono = "0.4.38"
+color-eyre = "0.6.3"
+fakeit = "1.3.0"
+itertools = "0.13.0"
+ratatui = { version = "0.29.0", features = ["widget-calendar"] }
+time = "0.3.36"
+unicode-width = "0.2.0"
