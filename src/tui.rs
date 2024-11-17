@@ -101,8 +101,16 @@ fn run(
 
     loop {
         // get title from years
-        let start_year = submits.first().map(|c| c.date.year()).unwrap_or(0);
-        let end_year = submits.last().map(|c| c.date.year()).unwrap_or(0);
+        let start_year = submits
+            .first()
+            .map(|c| c.date.year())
+            // if empty, use start year
+            .unwrap_or(start.year());
+        let end_year = submits
+            .last()
+            .map(|c| c.date.year())
+            // if empty, use end year
+            .unwrap_or(end.year());
         let title = if start_year == end_year {
             format!("{} sumbit Heatmap", start_year)
         } else {
